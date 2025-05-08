@@ -1,5 +1,4 @@
-// src/App.js
-import React, { useEffect } from "react";
+import React, { useEffect, ChangeEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Coin from "./Coin";
 import "./App.css";
@@ -8,54 +7,52 @@ import {
   fetchInitialCoinsData,
   setSearchTerm,
 } from "./redux/coinsSlice";
-import useBinanceTicker from "./useBinanceTicker"; // Import the custom hook
+import useBinanceTicker from "./useBinanceTicker";
+import { RootState, AppDispatch } from "./redux/store";
+import { CoinType, CoinDataType } from "./types";
 
 function App() {
-  const search = useSelector((state) => state.coins.search);
-  const coinsList = useSelector((state) => state.coins.coinsList);
-  const coinsData = useSelector((state) => state.coins.coinsData);
-  const livePrices = useSelector((state) => state.coins.livePrices);
-  const dispatch = useDispatch();
+  const search = useSelector((state: RootState) => state.coins.search);
+  const coinsList = useSelector((state: RootState) => state.coins.coinsList);
+  const coinsData = useSelector((state: RootState) => state.coins.coinsData);
+  const livePrices = useSelector((state: RootState) => state.coins.livePrices);
+  const dispatch = useDispatch<AppDispatch>();
 
-  // Fetch CoinGecko data once on mount
   useEffect(() => {
     dispatch(fetchInitialCoinsData());
     const intervalId = setInterval(() => {
       dispatch(fetchInitialCoinsData());
-    }, 60000); // Poll every 60 seconds
-    return () => clearInterval(intervalId); // Cleanup the interval on unmount
+    }, 60000);
+    return () => clearInterval(intervalId);
   }, [dispatch]);
 
-  // Use the custom hook to subscribe to Binance ticker data
   useBinanceTicker(coinsList.map(c => c.symbol));
 
-  const handleChange = e => dispatch(setSearchTerm(e.target.value));
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
+    dispatch(setSearchTerm(e.target.value));
 
-  // Build the final list: filter → merge REST + WS data
   const displayCoins = coinsList
     .filter(c =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.symbol.toLowerCase().includes(search.toLowerCase())
     )
     .map(c => {
-      const rest = coinsData.find(d => d.id === c.id) || {};
-      const wsPrice = livePrices[`${c.symbol}USDT`]?.price; // Access price from livePrices
+      const rest = coinsData.find((d: CoinDataType) => d.id === c.id) || {} as CoinDataType;
+      const wsPrice = livePrices[`${c.symbol}USDT`]?.price;
 
       return {
         ...c,
-        // REST fields (might be undefined until fetched)
         current_price: wsPrice !== undefined ? wsPrice : rest.current_price,
         total_volume: rest.total_volume,
         price_change_percentage_1h_in_currency: rest.price_change_percentage_1h_in_currency,
         price_change_percentage_24h_in_currency: rest.price_change_percentage_24h_in_currency,
         price_change_percentage_7d_in_currency: rest.price_change_percentage_7d_in_currency,
         market_cap: rest.market_cap,
-        sparkline_in_7d: rest.sparkline_in_7d
-      };
+        sparkline_in_7d: rest.sparkline_in_7d,
+      } as CoinType;
     });
 
-  // Helper to format numbers safely
-  const formatNum = num =>
+  const formatNum = (num: number | undefined) =>
     typeof num === "number" ? num.toLocaleString() : "N/A";
 
   return (

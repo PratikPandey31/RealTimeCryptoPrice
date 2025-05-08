@@ -9,12 +9,26 @@ import {
   LinearScale,
   PointElement,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
-const Coin = ({
+type CoinProps = {
+  image: string;
+  name: string;
+  symbol: string;
+  price?: number;
+  volume?: number;
+  priceChange1h?: number;
+  priceChange24h?: number;
+  priceChange7d?: number;
+  marketCap?: number;
+  sparkline?: number[];
+  formatNum?: (num: number) => string;
+};
+
+const Coin: React.FC<CoinProps> = ({
   image,
   name,
   symbol,
@@ -25,12 +39,10 @@ const Coin = ({
   priceChange7d,
   marketCap,
   sparkline,
-  formatNum
+  formatNum,
 }) => {
-  // Fallback format function if not provided
-  const _format = formatNum || ((num) => (typeof num === "number" ? num.toLocaleString() : "N/A"));
+  const _format = formatNum || ((num: number) => (typeof num === "number" ? num.toLocaleString() : "N/A"));
 
-  // Sample the sparkline data (display every 3rd point)
   const sampleRate = 3;
   const sampledSparkline = sparkline ? sparkline.filter((_, index) => index % sampleRate === 0) : [];
   const labels = sampledSparkline.map((_, idx) => idx * sampleRate);
@@ -42,10 +54,10 @@ const Coin = ({
         data: sampledSparkline,
         borderWidth: 1,
         tension: 0.3,
-        borderColor: priceChange7d < 0 ? '#f00606' : '#11d11b', // Color based on 7d change
-        pointRadius: 0, // Hide data points
-      }
-    ]
+        borderColor: priceChange7d !== undefined && priceChange7d < 0 ? "#f00606" : "#11d11b",
+        pointRadius: 0,
+      },
+    ],
   };
 
   return (
@@ -60,28 +72,20 @@ const Coin = ({
           <p className="coin-price">
             {price !== undefined ? `$${_format(price)}` : "N/A"}
           </p>
-          <p className={`coin-percent ${priceChange1h < 0 ? "red" : "green"}`}>
-            {priceChange1h !== undefined
-              ? `1h: ${priceChange1h.toFixed(2)}%`
-              : "1h: N/A"}
+          <p className={`coin-percent ${priceChange1h !== undefined && priceChange1h < 0 ? "red" : "green"}`}>
+            {priceChange1h !== undefined ? `1h: ${priceChange1h.toFixed(2)}%` : "1h: N/A"}
           </p>
-          <p className={`coin-percent ${priceChange24h < 0 ? "red" : "green"}`}>
-            {priceChange24h !== undefined
-              ? `24h: ${priceChange24h.toFixed(2)}%`
-              : "24h: N/A"}
+          <p className={`coin-percent ${priceChange24h !== undefined && priceChange24h < 0 ? "red" : "green"}`}>
+            {priceChange24h !== undefined ? `24h: ${priceChange24h.toFixed(2)}%` : "24h: N/A"}
           </p>
-          <p className={`coin-percent ${priceChange7d < 0 ? "red" : "green"}`}>
-            {priceChange7d !== undefined
-              ? `7d: ${priceChange7d.toFixed(2)}%`
-              : "7d: N/A"}
+          <p className={`coin-percent ${priceChange7d !== undefined && priceChange7d < 0 ? "red" : "green"}`}>
+            {priceChange7d !== undefined ? `7d: ${priceChange7d.toFixed(2)}%` : "7d: N/A"}
           </p>
           <p className="coin-volume">
             {volume !== undefined ? `$${_format(volume)}` : "Volume: N/A"}
           </p>
           <p className="coin-marketcap">
-            {marketCap !== undefined
-              ? `$${_format(marketCap)}`
-              : "Market Cap: N/A"}
+            {marketCap !== undefined ? `$${_format(marketCap)}` : "Market Cap: N/A"}
           </p>
           {sampledSparkline && sampledSparkline.length > 0 && (
             <div className="coin-chart">
@@ -89,7 +93,7 @@ const Coin = ({
                 data={chartData}
                 height={60}
                 options={{
-                  plugins: { legend: { display: false }, tooltip: { enabled: false } }, // Disable tooltip on hover
+                  plugins: { legend: { display: false }, tooltip: { enabled: false } },
                   scales: {
                     x: { display: false },
                     y: { display: false },
@@ -98,8 +102,8 @@ const Coin = ({
                     line: {
                       tension: 0.3,
                       borderWidth: 2,
-                    }
-                  }
+                    },
+                  },
                 }}
               />
             </div>

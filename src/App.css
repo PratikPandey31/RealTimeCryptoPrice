@@ -1,6 +1,6 @@
 .App {
   font-family: sans-serif;
-  background-color: #f4f4f4; /* Light background */
+  background-color: #f4f4f4; 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -39,7 +39,7 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 20px;
-  background-color: #e0e0e0; /* Light grey heading background */
+  background-color: #e0e0e0; 
   color: #333;
   font-weight: bold;
   border-bottom: 1px solid #ccc;
@@ -68,12 +68,12 @@
 
 .table-headings .coin-data p {
   text-align: right;
-  width: 16%; /* Adjust as needed */
+  width: 16%; 
 }
 
 .table-headings .coin-data p:first-child {
   text-align: right;
-  width: 20%; /* Price */
+  width: 20%; 
 }
 
 .coin-data-display {
