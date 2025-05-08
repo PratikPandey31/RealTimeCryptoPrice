@@ -1,0 +1,89 @@
+.App {
+  font-family: sans-serif;
+  background-color: #f4f4f4; /* Light background */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.page-title {
+  color: #333;
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+  width: 80%;
+  max-width: 600px;
+}
+
+.coin-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.center {
+  width: 80%;
+  max-width: 1200px;
+}
+
+.table-headings {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #e0e0e0; /* Light grey heading background */
+  color: #333;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  align-items: center;
+}
+
+.table-headings .coin {
+  display: flex;
+  align-items: center;
+  width: 30%;
+}
+
+.table-headings .coin-symbol {
+  margin-left: 10px;
+}
+
+.table-headings .symbol-header {
+  margin-left: 210px;
+}
+
+.table-headings .coin-data {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+}
+
+.table-headings .coin-data p {
+  text-align: right;
+  width: 16%; /* Adjust as needed */
+}
+
+.table-headings .coin-data p:first-child {
+  text-align: right;
+  width: 20%; /* Price */
+}
+
+.coin-data-display {
+  width: 80%;
+  max-width: 1200px;
+  margin-top: 10px;
+}
+
+.no-search-result {
+  padding: 20px;
+  text-align: center;
+  color: #777;
+}
